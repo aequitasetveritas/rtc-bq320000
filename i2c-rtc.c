@@ -13,8 +13,6 @@
  *  
  */
 
-#include <msp430.h>
-#include <msp430g2955.h>
 #include "i2c-rtc.h"
 
 void init_I2C() {
