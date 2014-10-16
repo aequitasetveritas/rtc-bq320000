@@ -213,14 +213,15 @@ uint8_t writeI2C(uint8_t subaddress, uint8_t * buff, uint8_t size) {
     return 0;
 }
 
-/*fecha_hora: Escribe en timestamp la fecha y hora en formato AAMMDDThhmmss*/
+/*fecha_hora: Escribe en timestamp la fecha y hora en formato AA/MM/DD hh:mm:ss*/
+
 uint8_t fecha_hora(uint8_t * timestamp) {
     //YYMMDDThhmmss
     char datos[7];
     //char timestamp[14];
     if (!(readI2C(0x00, datos, 7))) {
         int j = 0;
-        int i = 13;
+        int i = 17;//13;
         //segs
         char u_seg, d_seg;
         u_seg = datos[j] & 0x0f;
@@ -231,6 +232,8 @@ uint8_t fecha_hora(uint8_t * timestamp) {
         timestamp[i--] = '\0';
         timestamp[i--] = u_seg;
         timestamp[i--] = d_seg;
+	
+	timestamp[i--] = ':';
 
         //min
         char u_min, d_min;
@@ -241,6 +244,8 @@ uint8_t fecha_hora(uint8_t * timestamp) {
         d_min += 0x30;
         timestamp[i--] = u_min;
         timestamp[i--] = d_min;
+	
+	timestamp[i--] = ':';
 
         //hora
         char u_hora, d_hora;
@@ -251,7 +256,8 @@ uint8_t fecha_hora(uint8_t * timestamp) {
         d_hora += 0x30;
         timestamp[i--] = u_hora;
         timestamp[i--] = d_hora;
-
+	
+	timestamp[i--] = ' ';
         //descartar dia
         j++;
 
@@ -262,10 +268,11 @@ uint8_t fecha_hora(uint8_t * timestamp) {
         d_fecha = datos[j++] & 0x30;
         d_fecha >>= 4;
         d_fecha += 0x30;
-        timestamp[i--] = 'T';
         timestamp[i--] = u_fecha;
         timestamp[i--] = d_fecha;
-
+	
+	timestamp[i--] = '/';
+	
         //mes
         char u_mes, d_mes;
         u_mes = datos[j] & 0x0f;
@@ -275,6 +282,8 @@ uint8_t fecha_hora(uint8_t * timestamp) {
         d_mes += 0x30;
         timestamp[i--] = u_mes;
         timestamp[i--] = d_mes;
+
+	timestamp[i--] = '/';
 
         //año
         char u_year, d_year;
